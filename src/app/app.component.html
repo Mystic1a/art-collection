@@ -34,3 +34,15 @@
     </ng-container>
   </div>
 </div>
+
+<div class="d-flex justify-content-center my-5"
+  *ngIf="!isLoading">
+  <nx-pagination [nxCount]="artCollectionPagination.total_pages"
+    [nxPage]="pageStart"
+    [nxPerPage]="perPage"
+    nxType="advanced"
+    (nxGoPrev)="prevPage()"
+    (nxGoNext)="nextPage()"
+    (nxGoPage)="goToPage($event)">
+  </nx-pagination>
+</div>
