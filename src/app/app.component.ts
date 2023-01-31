@@ -24,6 +24,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private subscription: Subscription = new Subscription();
 
   artCollectionList: ArtCollectionData[] = [];
+  artCollectionListDisplay: ArtCollectionData[] = []; // * I created it to separate the data from the main list for the purpose of filtering.
   artCollectionList$ = new Subject<ArtCollectionParam>();
   artCollectionConfig!: ArtCollectionConfig;
   artCollectionPagination!: Pagination;
@@ -62,8 +63,10 @@ export class AppComponent implements OnInit, OnDestroy {
         .subscribe({
           next: (response: ArtCollectionModel) => {
             this.artCollectionList = response.data;
+            this.artCollectionListDisplay = response.data;
             this.artCollectionConfig = response.config;
             this.artCollectionPagination = response.pagination;
+            this.onSetStylesTitle();
             this.isLoading = false;
           },
           error: (err) => {
@@ -82,18 +85,62 @@ export class AppComponent implements OnInit, OnDestroy {
     this.artCollectionList$.next(params);
   }
 
+  onSetStylesTitle(): void {
+    const stylesArray = this.artCollectionList.reduce(
+      (acc, curr: ArtCollectionData) => {
+        return acc.concat(curr.style_titles as []);
+      },
+      []
+    );
+    const counts: { [key: string]: number } = {};
+    stylesArray.forEach(
+      (value: string) => (counts[value] = (counts[value] || 0) + 1)
+    );
+    for (const key in counts) {
+      if (Object.prototype.hasOwnProperty.call(counts, key)) {
+        const element = counts[key];
+        this.styleTitlesDropdown.push(`${key} (${element})`);
+      }
+    }
+  }
+
+  onFilterStylesTitle(): void {
+    this.artCollectionListDisplay = this.artCollectionList.filter(
+      (style: ArtCollectionData) =>
+        this.selectedStylesTitle.some((str: string) => {
+          const numString = str;
+          return style.style_titles.includes(
+            str
+              .replace(numString.match(/\(\d+\)/g)?.toString() || '', '')
+              .trim()
+          );
+        })
+    );
+    if (!this.artCollectionListDisplay.length) {
+      this.artCollectionListDisplay = this.artCollectionList;
+    }
+  }
+
+  onSetStylesTitlePerPageChange(): void {
+    this.selectedStylesTitle = [];
+    this.styleTitlesDropdown = [];
+  }
+
   prevPage(): void {
     this.pageStart--;
+    this.onSetStylesTitlePerPageChange();
     this.takeArtWorkCollection();
   }
 
   nextPage(): void {
     this.pageStart++;
+    this.onSetStylesTitlePerPageChange();
     this.takeArtWorkCollection();
   }
 
   goToPage(n: number): void {
     this.pageStart = n;
+    this.onSetStylesTitlePerPageChange();
     this.takeArtWorkCollection();
   }
 
