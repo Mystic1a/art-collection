@@ -21,8 +21,11 @@
   <div class="col-lg-4">
     <h6>Sort By:</h6>
     <nx-formfield nxLabel="Recommendation">
-      <nx-dropdown>
-        <nx-dropdown-item>
+      <nx-dropdown [(ngModel)]="selectedSortTitle"
+        (selectionChange)="onSortArtwork()">
+        <nx-dropdown-item *ngFor="let sort of sortTitlesDropdown"
+          [nxValue]="sort.value">
+          {{sort.label}}
         </nx-dropdown-item>
       </nx-dropdown>
     </nx-formfield>
@@ -68,3 +71,5 @@
     (nxGoPage)="goToPage($event)">
   </nx-pagination>
 </div>
+
+<!-- Copyright Allianz 2023 -->
