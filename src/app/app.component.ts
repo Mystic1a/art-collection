@@ -81,6 +81,20 @@ export class AppComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.artCollectionList$.next(params);
   }
+
+  onDisplayDateFlexible(
+    startYear: number,
+    endYear: number,
+    location: string
+  ): string {
+    if (!startYear || !endYear) {
+      return location;
+    } else if (startYear === endYear) {
+      return `${location} (${startYear})`;
+    } else {
+      return `${location} (${startYear} - ${endYear})`;
+    }
+  }
 }
 
 /** Copyright Allianz 2023 */
