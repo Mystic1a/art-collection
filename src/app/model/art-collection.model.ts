@@ -1,5 +1,4 @@
 export interface ArtCollectionParam {
-  limit?: number | null;
   page?: number | null;
 }
 
