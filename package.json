@@ -20,6 +20,7 @@
     "@angular/platform-browser-dynamic": "^15.1.0",
     "@angular/router": "^15.1.0",
     "@aposin/ng-aquila": "^15.0.0",
+    "bootstrap": "^4.5.3",
     "i18n-iso-countries": "^6.8.0",
     "iban": "^0.0.14",
     "moment": "^2.29.1",
