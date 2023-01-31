@@ -1,0 +1,34 @@
+<div class="text-center my-5">
+  <h1 nxHeadline="page-bold-caps">ART COLLECTION</h1>
+</div>
+
+<div class="d-flex justify-content-center"
+  *ngIf="isLoading">
+  <nx-spinner nxSize="large"></nx-spinner>
+</div>
+
+<div class="d-flex justify-content-center"
+  *ngIf="!isLoading">
+  <div class="form-group row mx-3 w-100">
+    <ng-container *ngFor="let artDisplays of artCollectionList">
+      <div class="col-lg-3 my-2">
+        <nx-card class="w-100">
+          <nx-card-header>
+            <img class="fit-contain"
+              width="100%"
+              height="450"
+              src="{{artDisplays.image_id ? artCollectionConfig.iiif_url + '/' + artDisplays.image_id + onSetBaseImgUrl : onSetPlaceholderImg}}">
+          </nx-card-header>
+          <h6 class="text-white font-weight-bolder my-3">{{artDisplays.title}}</h6>
+          <h6 class="text-white">{{artDisplays.artist_title}}</h6>
+          <span class="text-secondary">-</span>
+          <br>
+          <span class="text-secondary"
+            *ngFor="let material of artDisplays.material_titles">
+            {{material}}
+          </span>
+        </nx-card>
+      </div>
+    </ng-container>
+  </div>
+</div>
