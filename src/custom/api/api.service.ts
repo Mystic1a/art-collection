@@ -14,7 +14,7 @@ export class ApiService {
     @Inject(API_CONFIG) @Optional() apiConfig: ApiConfig,
     private http: HttpClient
   ) {
-    const baseUrl = apiConfig.apiEndpoint || environment.baseUrl;
+    const baseUrl = apiConfig?.apiEndpoint || environment.baseUrl;
     this.baseUrl = baseUrl + '/api/v1';
   }
 
