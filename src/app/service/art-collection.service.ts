@@ -1,4 +1,7 @@
-import { ArtCollectionModel } from './../model/art-collection.model';
+import {
+  ArtCollectionModel,
+  ArtCollectionParam,
+} from './../model/art-collection.model';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { ApiService } from 'src/custom/api/api.service';
@@ -11,9 +14,9 @@ export class ArtCollectionService {
 
   constructor(private apiService: ApiService) {}
 
-  onGetArtWorkList(params?: {
-    [page: number]: number;
-  }): Observable<ArtCollectionModel> {
+  onGetArtWorkList(
+    params?: ArtCollectionParam
+  ): Observable<ArtCollectionModel> {
     return this.apiService.get<ArtCollectionModel>(
       this.artCollectionUrl,
       params
