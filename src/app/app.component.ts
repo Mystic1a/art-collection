@@ -35,7 +35,7 @@ export class AppComponent implements OnInit, OnDestroy {
   selectedStylesTitle: string[] = [];
 
   pageStart = 1;
-  perPage = 10;
+  perPage = 12;
   isLoading = true;
 
   constructor(private artCollectionService: ArtCollectionService) {}
@@ -80,6 +80,21 @@ export class AppComponent implements OnInit, OnDestroy {
     };
     this.isLoading = true;
     this.artCollectionList$.next(params);
+  }
+
+  prevPage(): void {
+    this.pageStart--;
+    this.takeArtWorkCollection();
+  }
+
+  nextPage(): void {
+    this.pageStart++;
+    this.takeArtWorkCollection();
+  }
+
+  goToPage(n: number): void {
+    this.pageStart = n;
+    this.takeArtWorkCollection();
   }
 
   onDisplayDateFlexible(
