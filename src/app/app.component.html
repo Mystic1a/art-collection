@@ -12,7 +12,10 @@
   <div class="col-lg-4">
     <h6>Filter:</h6>
     <nx-formfield nxLabel="Style">
-      <nx-multi-select filter></nx-multi-select>
+      <nx-multi-select filter
+        [(ngModel)]="selectedStylesTitle"
+        [options]="styleTitlesDropdown"
+        (selectionChange)="onFilterStylesTitle()"></nx-multi-select>
     </nx-formfield>
   </div>
   <div class="col-lg-4">
@@ -29,7 +32,7 @@
 <div class="d-flex justify-content-center"
   *ngIf="!isLoading">
   <div class="form-group row mx-3 w-100">
-    <ng-container *ngFor="let artDisplays of artCollectionList">
+    <ng-container *ngFor="let artDisplays of artCollectionListDisplay">
       <div class="col-lg-3 my-2">
         <nx-card class="w-100">
           <nx-card-header>
