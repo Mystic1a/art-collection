@@ -21,7 +21,9 @@
           </nx-card-header>
           <h6 class="text-white font-weight-bolder my-3">{{artDisplays.title}}</h6>
           <h6 class="text-white">{{artDisplays.artist_title}}</h6>
-          <span class="text-secondary">-</span>
+          <span class="text-secondary">
+            {{onDisplayDateFlexible(artDisplays.date_start, artDisplays.date_end, artDisplays.place_of_origin)}}
+          </span>
           <br>
           <span class="text-secondary"
             *ngFor="let material of artDisplays.material_titles">
