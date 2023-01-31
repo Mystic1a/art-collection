@@ -23,7 +23,7 @@ import {
 export class AppComponent implements OnInit, OnDestroy {
   private subscription: Subscription = new Subscription();
 
-  artCollectionList: ArtCollectionData[] = [];
+  artCollectionList: any | ArtCollectionData[] = [];
   artCollectionListDisplay: ArtCollectionData[] = []; // * I created it to separate the data from the main list for the purpose of filtering.
   artCollectionList$ = new Subject<ArtCollectionParam>();
   artCollectionConfig!: ArtCollectionConfig;
@@ -34,6 +34,13 @@ export class AppComponent implements OnInit, OnDestroy {
 
   styleTitlesDropdown: string[] = [];
   selectedStylesTitle: string[] = [];
+
+  sortTitlesDropdown = [
+    { label: `Artwork's Name`, value: 'title' },
+    { label: `Artist's Name`, value: 'artist_title' },
+    { label: 'Date', value: 'date_start' },
+  ];
+  selectedSortTitle!: any;
 
   pageStart = 1;
   perPage = 12;
@@ -67,6 +74,9 @@ export class AppComponent implements OnInit, OnDestroy {
             this.artCollectionConfig = response.config;
             this.artCollectionPagination = response.pagination;
             this.onSetStylesTitle();
+            if (this.selectedSortTitle) {
+              this.onSortArtwork();
+            }
             this.isLoading = false;
           },
           error: (err) => {
@@ -87,7 +97,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   onSetStylesTitle(): void {
     const stylesArray = this.artCollectionList.reduce(
-      (acc, curr: ArtCollectionData) => {
+      (acc: ArtCollectionData[], curr: ArtCollectionData) => {
         return acc.concat(curr.style_titles as []);
       },
       []
@@ -119,6 +129,20 @@ export class AppComponent implements OnInit, OnDestroy {
     if (!this.artCollectionListDisplay.length) {
       this.artCollectionListDisplay = this.artCollectionList;
     }
+  }
+
+  onSortArtwork() {
+    this.artCollectionListDisplay = this.artCollectionList.sort(
+      (a: { [x: string]: number }, b: { [x: string]: number }) => {
+        if (a[this.selectedSortTitle] < b[this.selectedSortTitle]) {
+          return -1;
+        }
+        if (a[this.selectedSortTitle] > b[this.selectedSortTitle]) {
+          return 1;
+        }
+        return 0;
+      }
+    );
   }
 
   onSetStylesTitlePerPageChange(): void {
