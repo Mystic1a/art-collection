@@ -20,6 +20,8 @@ import { NxModalModule } from '@aposin/ng-aquila/modal';
 import { NxOverlayModule } from '@aposin/ng-aquila/overlay';
 import { NxPopoverModule } from '@aposin/ng-aquila/popover';
 import { NxSpinnerModule } from '@aposin/ng-aquila/spinner';
+import { NxCardModule } from '@aposin/ng-aquila/card';
+import { NxPaginationModule } from '@aposin/ng-aquila/pagination';
 import { AppComponent } from './app.component';
 
 @NgModule({
@@ -48,6 +50,8 @@ import { AppComponent } from './app.component';
     NxOverlayModule,
     NxPopoverModule,
     NxSpinnerModule,
+    NxCardModule,
+    NxPaginationModule,
   ],
   bootstrap: [AppComponent],
 })
