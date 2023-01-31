@@ -40,7 +40,7 @@ export class AppComponent implements OnInit, OnDestroy {
     { label: `Artist's Name`, value: 'artist_title' },
     { label: 'Date', value: 'date_start' },
   ];
-  selectedSortTitle!: any;
+  selectedSortTitle!: any; // * I'm not sure what type is this.
 
   pageStart = 1;
   perPage = 12;
