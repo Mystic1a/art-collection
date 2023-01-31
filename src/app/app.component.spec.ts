@@ -1,72 +1,100 @@
-import { HttpClientJsonpModule, HttpClientModule } from '@angular/common/http';
-import { TestBed } from '@angular/core/testing';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NxButtonModule } from '@aposin/ng-aquila/button';
-import { NxCheckboxModule } from '@aposin/ng-aquila/checkbox';
-import { NxDocumentationIconModule } from '@aposin/ng-aquila/documentation-icons';
-import { NxDropdownModule } from '@aposin/ng-aquila/dropdown';
-import { NxFooterModule } from '@aposin/ng-aquila/footer';
-import { NxFormfieldModule } from '@aposin/ng-aquila/formfield';
-import { NxGridModule } from '@aposin/ng-aquila/grid';
-import { NxHeadlineModule } from '@aposin/ng-aquila/headline';
-import { NxIconModule } from '@aposin/ng-aquila/icon';
-import { NxInputModule } from '@aposin/ng-aquila/input';
-import { NxLinkModule } from '@aposin/ng-aquila/link';
-import { NxMessageModule } from '@aposin/ng-aquila/message';
-import { NxModalModule } from '@aposin/ng-aquila/modal';
-import { NxOverlayModule } from '@aposin/ng-aquila/overlay';
-import { NxPopoverModule } from '@aposin/ng-aquila/popover';
-
+import { of, Subscription } from 'rxjs';
+import { ArtCollectionService } from './service/art-collection.service';
+import {
+  ArtCollectionData,
+  ArtCollectionModel,
+} from './model/art-collection.model';
+import { TestBed, tick } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('AppComponent', () => {
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            declarations: [AppComponent],
-            imports: [
-                BrowserModule,
-                BrowserAnimationsModule,
-                FormsModule,
-                HttpClientJsonpModule,
-                HttpClientModule,
-                ReactiveFormsModule,
-                NxButtonModule,
-                NxCheckboxModule,
-                NxDocumentationIconModule,
-                NxDropdownModule,
-                NxFooterModule,
-                NxFormfieldModule,
-                NxGridModule,
-                NxHeadlineModule,
-                NxIconModule,
-                NxInputModule,
-                NxLinkModule,
-                NxMessageModule,
-                NxModalModule,
-                NxOverlayModule,
-                NxPopoverModule,
-            ],
-        }).compileComponents();
+  let component: AppComponent;
+  let artCollectionService: ArtCollectionService;
+
+  beforeAll(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [
+        AppComponent,
+        {
+          provide: ArtCollectionService,
+          useValue: jasmine.createSpyObj('ArtCollectionService', [
+            'onGetArtWorkList',
+          ]),
+        },
+        {
+          provide: Subscription,
+          useValue: jasmine.createSpyObj('Subscription', ['add']),
+        },
+      ],
+    });
+    component = TestBed.inject(AppComponent);
+    artCollectionService = TestBed.inject(ArtCollectionService);
+  });
+
+  describe('-> SetDropdownStylesFunction', () => {
+    it('sets styles title dropdown based on art collection list [style_titles]', () => {
+      component.artCollectionList = [
+        { style_titles: ['style 1', 'style 2'] },
+        { style_titles: ['style 3', 'style 4'] },
+        { style_titles: ['style 1', 'style 5'] },
+      ];
+      component.onSetStylesTitle();
+      expect(component.styleTitlesDropdown).toEqual([
+        'style 1 (2)',
+        'style 2 (1)',
+        'style 3 (1)',
+        'style 4 (1)',
+        'style 5 (1)',
+      ]);
+    });
+  });
+
+  describe('-> FilterFunction', () => {
+    it('Filters art collection list based on selected style titles', () => {
+      component.artCollectionList = [
+        { style_titles: ['style 1', 'style 2'] },
+        { style_titles: ['style 3', 'style 4'] },
+        { style_titles: ['style 5', 'style 6'] },
+      ];
+      component.selectedStylesTitle = ['style 2', 'style 4'];
+      component.onFilterStylesTitle();
+      expect(component.artCollectionListDisplay).toEqual([
+        { style_titles: ['style 1', 'style 2'] },
+        { style_titles: ['style 3', 'style 4'] },
+      ] as ArtCollectionData[]);
     });
 
-    it('should create the app', () => {
-        const fixture = TestBed.createComponent(AppComponent);
-        const app = fixture.componentInstance;
-        expect(app).toBeTruthy();
+    it('Returns original art collection list if no items match', () => {
+      component.artCollectionList = [
+        { style_titles: ['style 1', 'style 2'] },
+        { style_titles: ['style 3', 'style 4'] },
+        { style_titles: ['style 5', 'style 6'] },
+      ];
+      component.selectedStylesTitle = ['style 7', 'style 8'];
+      component.onFilterStylesTitle();
+      expect(component.artCollectionListDisplay).toEqual(
+        component.artCollectionList
+      );
     });
+  });
 
-    it(`should create the form`, () => {
-        const fixture = TestBed.createComponent(AppComponent);
-        const app = fixture.componentInstance;
-        expect(app.formGroup).toBeTruthy();
+  describe('-> SortFunction', () => {
+    it('sorts the art collection list display based on the selected sort title', () => {
+      component.selectedSortTitle = 'price';
+      component.artCollectionList = [
+        { title: 'artwork 1' },
+        { title: 'artwork 2' },
+        { title: 'artwork 3' },
+      ];
+      component.artCollectionListDisplay = component.artCollectionList;
+      component.onSortArtwork();
+      expect(component.artCollectionListDisplay).toEqual([
+        { title: 'artwork 1' },
+        { title: 'artwork 2' },
+        { title: 'artwork 3' },
+      ] as ArtCollectionData[]);
     });
-
-    it('should render title', () => {
-        const fixture = TestBed.createComponent(AppComponent);
-        fixture.detectChanges();
-        const compiled = fixture.nativeElement;
-        expect(compiled.querySelector('h1.nx-heading--section').textContent).toContain('Aquila Insurance App');
-    });
+  });
 });
